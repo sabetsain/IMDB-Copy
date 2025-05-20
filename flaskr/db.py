@@ -3,6 +3,7 @@ import os
 import click
 from flask import current_app, g
 from datetime import datetime
+import csv
 
 def get_db():
     if 'db' not in g:
@@ -14,6 +15,41 @@ def get_db():
         )
         # g.db.row_factory = psycopg.rows
     return g.db
+
+def load_movies_csv():
+    db = get_db()
+    with open(os.path.join(os.path.dirname(__file__), '..', 'data', 'Movies_Table.csv'), newline='', encoding='utf-8') as csvfile:
+        reader = csv.DictReader(csvfile)
+        with db.cursor() as cur:
+            for row in reader:
+                cur.execute(
+                    "INSERT INTO movie (title, year, director, genre, run_time, IMDB_rating, num_votes) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                    (row['title'], row['year'], row['director'], row['genre'], row['run_time'], row['IMDB_rating'], row['num_votes'])
+                )
+        db.commit()
+def load_actors_csv():
+    db = get_db()
+    with open(os.path.join(os.path.dirname(__file__), '..', 'data', 'Actors_Table.csv'), newline='', encoding='utf-8') as csvfile:
+        reader = csv.DictReader(csvfile)
+        with db.cursor() as cur:
+            for row in reader:
+                cur.execute(
+                    "INSERT INTO actors (actor_name) VALUES (%s)",
+                    (row['actor_name'],)
+                )
+        db.commit()
+
+def load_stars_in_csv():
+    db = get_db()
+    with open(os.path.join(os.path.dirname(__file__), '..', 'data', 'Stars_In_Table.csv'), newline='', encoding='utf-8') as csvfile:
+        reader = csv.DictReader(csvfile)
+        with db.cursor() as cur:
+            for row in reader:
+                cur.execute(
+                    "INSERT INTO stars_in (actor_id, movie_id) VALUES (%s, %s)",
+                    (row['actor_id'], row['movie_id'])
+                )
+        db.commit()
 
 def close_db(e=None):
     db = g.pop('db', None)
@@ -27,6 +63,9 @@ def init_db():
         with db.cursor() as cur:
             cur.execute(f.read().decode('utf8'))
         db.commit()
+    load_movies_csv()
+    load_actors_csv()
+    load_stars_in_csv()
         # db.executescript(f.read().decode('utf8'))
 
 def init_app(app):

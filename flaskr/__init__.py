@@ -31,4 +31,8 @@ def create_app(test_config=None):
     
     db.init_app(app)
 
+    # Register the movies blueprint
+    from . import routes
+    app.register_blueprint(routes.bp)
+
     return app

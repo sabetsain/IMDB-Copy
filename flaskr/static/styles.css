@@ -1,0 +1,13 @@
+.my-table{
+    border: 1px solid;
+    background-color: gray;
+    padding: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.my-table th,
+.my-table td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+}

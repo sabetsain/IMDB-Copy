@@ -18,7 +18,7 @@ CREATE TABLE movie (
 
 CREATE TABLE user_profile (
     password TEXT NOT NULL,
-    user_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY
+    user_id TEXT NOT NULL PRIMARY KEY
 );
 
 CREATE TABLE actors (
@@ -27,7 +27,7 @@ CREATE TABLE actors (
 );
 
 CREATE TABLE watchlist (
-    user_id INTEGER NOT NULL,
+    user_id TEXT NOT NULL,
     movie_id INTEGER NOT NULL,
     PRIMARY KEY (user_id, movie_id),
     FOREIGN KEY (user_id) REFERENCES user_profile(user_id),
@@ -43,7 +43,7 @@ CREATE TABLE stars_in (
 );
 
 CREATE TABLE rating (
-    user_id INTEGER NOT NULL,
+    user_id TEXT NOT NULL,
     movie_id INTEGER NOT NULL,
     rating INTEGER NOT NULL,
     PRIMARY KEY (user_id, movie_id),

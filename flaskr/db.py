@@ -88,7 +88,6 @@ def init_db():
     load_movies_csv()
     load_actors_csv()
     load_stars_in_csv()
-        # db.executescript(f.read().decode('utf8'))
 
 def init_app(app):
     app.teardown_appcontext(close_db)
@@ -99,6 +98,3 @@ def init_db_command():
     """Clear the existing data and create new tables."""
     init_db()
     click.echo('Initialized the database.')
-
-# Removed as psycopg._psycopg.DateFromTicks is no longer available
-# psycopg._psycopg.DateFromTicks = datetime.fromtimestamp

@@ -24,7 +24,7 @@ def show_actors():
 @bp.route('/watchlist')
 def show_watchlist():
     #user_id = session["UserName"]
-    user_id = 2
+    user_id = "sebastian"
     db = get_db()
     with db.cursor() as cur:
         cur.execute("SELECT movie_id FROM watchlist WHERE user_id = %s", (user_id,))

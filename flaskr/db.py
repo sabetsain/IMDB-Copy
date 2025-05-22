@@ -4,7 +4,9 @@ import click
 from flask import current_app, g
 from datetime import datetime
 import csv
+from flask import Flask
 
+app = Flask(__name__)
 def get_db():
     if 'db' not in g:
         g.db = psycopg.connect(
@@ -49,6 +51,26 @@ def load_stars_in_csv():
                     "INSERT INTO stars_in (actor_id, movie_id) VALUES (%s, %s)",
                     (row['actor_id'], row['movie_id'])
                 )
+        db.commit()
+
+def add_rating(user_id, movie_id, rating):
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "INSERT INTO ratings (user_id, movie_id, rating) VALUES (%s, %s, %s)",
+            (user_id, movie_id, rating)
+        )
+        cur.execute(
+            "SELECT IMDB_rating, num_votes FROM movie WHERE movie_id = %s",
+            (movie_id,)
+        )
+        imdb_rating, num_votes = cur.fetchone()
+        new_num_votes = num_votes + 1
+        new_imdb_rating = (imdb_rating * num_votes + rating) / (new_num_votes)
+        cur.execute(
+            "UPDATE movie SET IMDB_rating = %s, num_votes = %s WHERE movie_id = %s",
+            (new_imdb_rating, new_num_votes, movie_id)
+        )
         db.commit()
 
 def close_db(e=None):

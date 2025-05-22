@@ -32,4 +32,5 @@ class User:
                 return stored_password == hashed_password
             else:
                 cur.execute("INSERT INTO user_profile(user_id, password) VALUES (%s, %s)", (self.username, hashed_password,))
+                db.commit()
                 return True

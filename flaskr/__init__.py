@@ -29,8 +29,8 @@ def create_app(test_config=None):
     db.init_app(app)
 
     # Register the movies blueprint
-    app.register_blueprint(routes.bp)
     app.register_blueprint(auth.bp)
+    app.register_blueprint(routes.bp)
 
     return app
 

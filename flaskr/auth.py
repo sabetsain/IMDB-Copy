@@ -1,14 +1,13 @@
 import os
 
-from flask import Flask, redirect, url_for, render_template, session, request, flash, Blueprint
-from flaskr import create_app
+from flask import redirect, url_for, render_template, session, request, flash, Blueprint
 from .user import User
 
 bp = Blueprint('auth', __name__)
 
 @bp.route('/')
 def index():
-    return redirect(url_for('login'))
+    return redirect(url_for('auth.login'))
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -32,4 +31,4 @@ def home_page(username):
     if 'username' not in session or session['username'] != username:
         return redirect(url_for('login'))
     
-    return f'Hello, {username}!'
+    return render_template('user.html')

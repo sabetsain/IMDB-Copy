@@ -2,6 +2,8 @@ import os
 
 from flask import Flask
 from . import db
+from . import auth
+from . import routes
 
 def create_app(test_config=None):
     # create and configure the app
@@ -27,9 +29,7 @@ def create_app(test_config=None):
     db.init_app(app)
 
     # Register the movies blueprint
-    from . import routes
     app.register_blueprint(routes.bp)
-    from . import auth
     app.register_blueprint(auth.bp)
 
     return app

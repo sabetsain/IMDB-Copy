@@ -13,7 +13,8 @@ CREATE TABLE movie (
     run_time INTEGER NOT NULL,
     movie_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     IMDB_rating REAL NOT NULL,
-    num_votes INTEGER NOT NULL
+    num_votes INTEGER NOT NULL,
+    poster_url TEXT
 );    
 
 CREATE TABLE user_profile (
@@ -50,3 +51,4 @@ CREATE TABLE rating (
     FOREIGN KEY (user_id) REFERENCES user_profile(user_id),
     FOREIGN KEY (movie_id) REFERENCES movie(movie_id)
 );
+

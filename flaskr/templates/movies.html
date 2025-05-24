@@ -20,8 +20,14 @@
         <tbody>
             {% for row in movies %}
             <tr>
-                {% for cell in row %}
-                    <td>{{ cell }}</td>
+                {% for col, cell in zip(column_names, row) %}
+                    <td>
+                        {% if col == 'poster_url' %}
+                            <img src="{{ cell }}" alt="Hello this is a test" width="100">
+                        {% else %}
+                            {{ cell }}
+                        {% endif %}
+                    </td>
                 {% endfor %}
                 <td>
                     <form action="/add_to_watchlist" method="POST">

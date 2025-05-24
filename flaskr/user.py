@@ -28,7 +28,7 @@ class User:
             cur.execute("SELECT password FROM user_profile WHERE user_id=%s", (self.username,))
             user_record = cur.fetchone()
             if user_record:
-                stored_password = user_record
+                stored_password = user_record[0]
                 return stored_password == hashed_password
             else:
                 cur.execute("INSERT INTO user_profile(user_id, password) VALUES (%s, %s)", (self.username, hashed_password,))

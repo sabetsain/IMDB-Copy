@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, request, redirect, url_for
+from flask import Blueprint, render_template, session, request, redirect, url_for, flash
 from .db import get_db
 
 bp = Blueprint('movies', __name__)
@@ -23,8 +23,7 @@ def show_actors():
 
 @bp.route('/watchlist')
 def show_watchlist():
-    #user_id = session["UserName"]
-    user_id = "sebastian"
+    user_id = session["username"]
     db = get_db()
     with db.cursor() as cur:
         cur.execute("SELECT movie_id FROM watchlist WHERE user_id = %s", (user_id,))
@@ -142,24 +141,27 @@ def show_rating():
 
 @bp.route('/add_to_watchlist', methods=['POST'])
 def add_to_watchlist():
-    #user_id = session["UserName"]
-    user_id = "sebastian"
-    movie_id = request.form['movie_id']
+    user_id = session.get("username")
+    movie_id = request.form.get("movie_id")
 
     db = get_db()
     with db.cursor() as cur:
-        cur.execute(
-            "INSERT INTO watchlist (user_id, movie_id) VALUES (%s, %s)",
-            (user_id, movie_id)
-        )
-        db.commit()
-
-    return redirect(url_for(''))
+        try:
+            cur.execute(
+                "INSERT INTO watchlist (user_id, movie_id) VALUES (%s, %s)",
+                (user_id, movie_id)
+            )
+            db.commit()
+            flash("Movie added to watchlist!")
+        except Exception as e:
+            db.rollback()
+            flash(f"Failed to add movie to watchlist: {e}")
+    
+    return redirect(url_for('movies.show_movies'))
 
 @bp.route('/remove_from_watchlist', methods=['POST'])
 def remove_from_watchlist():
-    #user_id = session["UserName"]
-    user_id = "sebastian"
+    user_id = session.get("username")
     movie_id = request.form['movie_id']
 
     db = get_db()
@@ -169,5 +171,5 @@ def remove_from_watchlist():
             (user_id, movie_id)
         )
         db.commit()
-
-    return redirect(url_for(''))
+    flash("Movie removed from watchlist!")
+    return redirect(url_for('movies.show_watchlist'))

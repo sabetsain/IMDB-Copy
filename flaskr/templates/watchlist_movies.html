@@ -20,6 +20,12 @@
                 {% for cell in row %}
                     <td>{{ cell }}</td>
                 {% endfor %}
+                <td>
+                    <form action="{{ url_for('movies.remove_from_watchlist') }}" method="post">
+                        <input type="hidden" name="movie_id" value="{{ row[0] }}">
+                        <button type="submit">Remove</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

@@ -23,6 +23,12 @@
                 {% for cell in row %}
                     <td>{{ cell }}</td>
                 {% endfor %}
+                <td>
+                    <form action="/add_to_watchlist" method="POST">
+                        <input type="hidden" name="movie_id" value="{{ row[0] }}">
+                        <button type="submit">Add to Watchlist</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

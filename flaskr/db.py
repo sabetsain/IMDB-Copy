@@ -21,8 +21,8 @@ def load_movies_csv():
         with db.cursor() as cur:
             for row in reader:
                 cur.execute(
-                    "INSERT INTO movie (title, year, director, genre, run_time, IMDB_rating, num_votes) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-                    (row['title'], row['year'], row['director'], row['genre'], row['run_time'], row['IMDB_rating'], row['num_votes'])
+                    "INSERT INTO movie (title, year, director, genre, run_time, IMDB_rating, num_votes, poster_url) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                    (row['title'], row['year'], row['director'], row['genre'], row['run_time'], row['IMDB_rating'], row['num_votes'], row['poster_url'])
                 )
         db.commit()
 def load_actors_csv():

@@ -5,12 +5,17 @@ bp = Blueprint('movies', __name__)
 
 @bp.route('/movies')
 def show_movies():
+    user_id = session.get("username")
+    if not user_id:
+        flash("You need to log in to view movies.")
+        return redirect(url_for('auth.login'))
+    
     db = get_db()
     with db.cursor() as cur:
-        cur.execute("SELECT movie_id, title, year, director, genre, run_time, IMDB_rating, num_votes FROM movie")
+        cur.execute("SELECT movie_id, poster_url, title, year, director, genre, run_time, IMDB_rating, num_votes FROM movie")
         movies = cur.fetchall()
         column_names = [desc[0] for desc in cur.description] if cur.description else []
-    return render_template('movies.html', movies=movies, column_names=column_names)
+    return render_template('movies.html', movies=movies, column_names=column_names, zip=zip)
 
 @bp.route('/actors')
 def show_actors():
@@ -23,7 +28,7 @@ def show_actors():
 
 @bp.route('/watchlist')
 def show_watchlist():
-    user_id = session["username"]
+    user_id = session.get("username")
     db = get_db()
     with db.cursor() as cur:
         cur.execute("SELECT movie_id FROM watchlist WHERE user_id = %s", (user_id,))
@@ -31,17 +36,16 @@ def show_watchlist():
         if not movie_ids:
             movies = []
             column_names = []
-        # format_strings = ','.join(['%s'] * len(movie_ids))
-        movies = []
-        for movie_id in movie_ids:
-            cur.execute("""
-                SELECT movie_id, title, year, director, genre, run_time, IMDB_rating, num_votes
+        else:
+            format_strings = ','.join(['%s'] * len(movie_ids))
+            cur.execute(f"""
+                SELECT movie_id, poster_url, title, year, director, genre, run_time, IMDB_rating, num_votes
                 FROM movie
-                WHERE movie_id = %s
-            """, (movie_id,))
-            movies += cur.fetchall()
-        column_names = [desc[0] for desc in cur.description] if cur.description else []
-    return render_template('watchlist_movies.html', movies=movies, column_names=column_names)
+                WHERE movie_id IN ({format_strings})
+            """, tuple(movie_ids))
+            movies = cur.fetchall()
+            column_names = [desc[0] for desc in cur.description]
+    return render_template('watchlist_movies.html', movies=movies, column_names=column_names, zip=zip)
 
 
 

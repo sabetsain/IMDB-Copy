@@ -33,7 +33,7 @@ CREATE TABLE favourite_actors (
     PRIMARY KEY (user_id, actor_id),
     FOREIGN KEY (user_id) REFERENCES user_profile(user_id),
     FOREIGN KEY (actor_id) REFERENCES actors(actor_id)
-)
+);
 
 CREATE TABLE watchlist (
     user_id TEXT NOT NULL,

@@ -28,7 +28,7 @@ export default function Movies({ token, userId }) {
       else if (result.movies && result.columns) {
         const mapped = result.movies.map(row =>
           Object.fromEntries(result.columns.map((col, i) => [col, row[i]]))
-        );
+        ).sort((a, b) => a.movie_id - b.movie_id);
         setAllMovies(mapped);
         
         // Load first batch
@@ -140,28 +140,36 @@ export default function Movies({ token, userId }) {
     });
   };
 
-  const StarRating = ({ movie_id, currentRating }) => (
-    <div className="star-rating">
-      <span className="star-rating-label">Your Rating:</span>
-      {[1, 2, 3, 4, 5].map(star => (
-        <span
-          key={star}
-          onClick={() => handleRating(movie_id, star)}
-          className={`star ${star <= (currentRating || 0) ? 'star-filled' : 'star-empty'}`}
-        >
-          ★
-        </span>
-      ))}
-      {currentRating && (
-        <button 
-          onClick={() => handleRemoveRating(movie_id)}
-          className="btn btn-secondary btn-small"
-        >
-          Remove Rating
-        </button>
-      )}
-    </div>
-  );
+  const StarRating = ({ movie_id, currentRating }) => {
+    const [hoverRating, setHoverRating] = useState(undefined);
+
+    return (
+      <div className="star-rating">
+        <span className="star-rating-label">Your Rating:</span>
+        {[1, 2, 3, 4, 5].map(star => (
+          <span
+            key={star}
+            onClick={() => handleRating(movie_id, star)}
+            onMouseEnter={() => setHoverRating(star)}
+            onMouseLeave={() => setHoverRating(0)}
+            className={`star ${
+              star <= (hoverRating || currentRating) ? 'star-filled' : 'star-empty'
+            }`}
+          >
+            ★
+          </span>
+        ))}
+        {currentRating && (
+          <button 
+            onClick={() => handleRemoveRating(movie_id)}
+            className="btn btn-secondary btn-small"
+          >
+            Remove Rating
+          </button>
+        )}
+      </div>
+    );
+  };
 
   if (!token) return (
     <div className="page-container">

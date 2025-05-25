@@ -5,6 +5,7 @@ from flask import current_app, g
 from datetime import datetime
 import csv
 from flask import Flask
+from flask.cli import with_appcontext
 
 app = Flask(__name__)
 def get_db():
@@ -76,6 +77,7 @@ def init_app(app):
     app.cli.add_command(init_db_command)
 
 @click.command('init-db')
+@with_appcontext
 def init_db_command():
     """Clear the existing data and create new tables."""
     init_db()

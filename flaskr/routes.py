@@ -159,6 +159,57 @@ def remove_from_watchlist():
 
     return jsonify({'success': True})
 
+@bp.route('/add_favourite_actor', methods=['POST'])
+def add_favourite_actor():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    actor_id = data.get("actor_id")
+    if not user_id or not actor_id:
+        return jsonify({'success': False, 'error': 'Missing user_id or actor_id'}), 400
+
+    db = get_db()
+    with db.cursor() as cur:
+        try:
+            cur.execute(
+                "INSERT INTO favourite_actor (user_id, actor_id) VALUES (%s, %s)",
+                (user_id, actor_id)
+            )
+            db.commit()
+            return jsonify({'success': True})
+        except Exception as e:
+            db.rollback()
+            return jsonify({'success': False, 'error': str(e)}), 400
+
+@bp.route('/remove_favourite_actor', methods=['POST'])
+def remove_favourite_actor():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    actor_id = data.get("actor_id")
+
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "DELETE FROM favourite_actor WHERE user_id = %s AND actor_id = %s",
+            (user_id, actor_id)
+        )
+        db.commit()
+
+    return jsonify({'success': True})
+
+@bp.route('/favourite_actors/<user_id>', methods=['GET'])
+def show_favourite_actors(user_id):
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute("""
+            SELECT a.actor_id, a.actor_name
+            FROM favourite_actor fa
+            JOIN actors a ON fa.actor_id = a.actor_id
+            WHERE fa.user_id = %s
+        """, (user_id,))
+        actors = cur.fetchall()
+        column_names = [desc[0] for desc in cur.description]
+    return jsonify({'actors': actors, 'columns': column_names})
+
 
 @bp.route('/login', methods=['POST'])
 def login():

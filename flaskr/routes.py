@@ -41,8 +41,8 @@ def show_watchlist(user_id):
         column_names = [desc[0] for desc in cur.description]
     return jsonify({'movies': movies, 'columns': column_names})
 
-@bp.route('/favourite_actors/<user_id>', methods=['GET'])
-def show_favourite_actors(user_id):
+@bp.route('/favourite_actor/<user_id>', methods=['GET'])
+def show_favourite_actor(user_id):
     db = get_db()
     with db.cursor() as cur:
         cur.execute("""

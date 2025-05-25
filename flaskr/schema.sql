@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS actors CASCADE;
 DROP TABLE IF EXISTS watchlist CASCADE;
 DROP TABLE IF EXISTS stars_in CASCADE;
 DROP TABLE IF EXISTS rating CASCADE;
+DROP TABLE IF EXISTS favourite_actor CASCADE;
 
 CREATE TABLE movie (
     title TEXT NOT NULL,
@@ -27,7 +28,7 @@ CREATE TABLE actors (
     actor_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY
 );
 
-CREATE TABLE favourite_actors (
+CREATE TABLE favourite_actor (
     user_id TEXT NOT NULL,
     actor_id INTEGER NOT NULL,
     PRIMARY KEY (user_id, actor_id),

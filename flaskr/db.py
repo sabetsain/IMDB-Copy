@@ -10,10 +10,10 @@ app = Flask(__name__)
 def get_db():
     if 'db' not in g:
         g.db = psycopg.connect(
-            host="localhost",
             dbname="imdb_copy",
-            user='dis_project',
-            password='dis_project'
+            user="dis_project",
+            password="dis_project",
+            host="localhost"
         )
         # g.db.row_factory = psycopg.rows
     return g.db

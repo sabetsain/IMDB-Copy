@@ -41,6 +41,21 @@ def show_watchlist(user_id):
         column_names = [desc[0] for desc in cur.description]
     return jsonify({'movies': movies, 'columns': column_names})
 
+@bp.route('/favourite_actors/<user_id>', methods=['GET'])
+def show_favourite_actors(user_id):
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute("""
+            SELECT a.actor_id, a.actor_name
+            FROM favourite_actor fa
+            JOIN actors a ON fa.actor_id = a.actor_id
+            WHERE fa.user_id = %s
+        """, (user_id,))
+        actors = cur.fetchall()
+        column_names = [desc[0] for desc in cur.description]
+    return jsonify({'actors': actors, 'columns': column_names})
+
+
 @bp.route('/add_rating', methods=['POST'])
 def add_rating():
     data = request.get_json()
@@ -195,21 +210,6 @@ def remove_favourite_actor():
         db.commit()
 
     return jsonify({'success': True})
-
-@bp.route('/favourite_actors/<user_id>', methods=['GET'])
-def show_favourite_actors(user_id):
-    db = get_db()
-    with db.cursor() as cur:
-        cur.execute("""
-            SELECT a.actor_id, a.actor_name
-            FROM favourite_actor fa
-            JOIN actors a ON fa.actor_id = a.actor_id
-            WHERE fa.user_id = %s
-        """, (user_id,))
-        actors = cur.fetchall()
-        column_names = [desc[0] for desc in cur.description]
-    return jsonify({'actors': actors, 'columns': column_names})
-
 
 @bp.route('/login', methods=['POST'])
 def login():

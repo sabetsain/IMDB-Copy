@@ -1,5 +1,21 @@
 const API_URL = "http://127.0.0.1:5000/api";
+import { round } from "mathjs";
 
+export function formatVotes(num) {
+  if (num >= 1000000) {
+    return round((num / 1000000),1) + "M";
+  }
+  
+  if (num >= 1000) {
+    if (num >= 10000) {
+      return Math.floor(num / 1000) + "K";
+    } else {
+      return round((num / 1000),1) + "K";
+    }
+  }
+  
+  return num.toString();
+}
 export async function login(username, password) {
   const res = await fetch(`${API_URL}/login`, {
     method: "POST",

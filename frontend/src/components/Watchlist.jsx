@@ -1,5 +1,6 @@
+import { round } from "mathjs";
 import { useEffect, useState } from "react";
-import { getWatchlist, removeFromWatchlist, addRating, changeRating, deleteRating, getUserRating } from "../api";
+import { getWatchlist, removeFromWatchlist, addRating, changeRating, deleteRating, getUserRating, formatVotes } from "../api";
 
 export default function Watchlist({ token, userId }) {
   const [watchlist, setWatchlist] = useState([]);
@@ -47,7 +48,7 @@ export default function Watchlist({ token, userId }) {
       if (currentRating) {
         await changeRating(token, userId, movie_id, rating);
       } else {
-        await addRating(token, userId, movie_id, rating);
+        await addRating(token, userId, movie_id, rating * 2);
       }
       setUserRatings(prev => ({ ...prev, [movie_id]: rating }));
     } catch (error) {
@@ -82,28 +83,36 @@ export default function Watchlist({ token, userId }) {
     });
   };
 
-  const StarRating = ({ movie_id, currentRating }) => (
-    <div className="star-rating">
-      <span className="star-rating-label">Your Rating:</span>
-      {[1, 2, 3, 4, 5].map(star => (
-        <span
-          key={star}
-          onClick={() => handleRating(movie_id, star)}
-          className={`star ${star <= (currentRating || 0) ? 'star-filled' : 'star-empty'}`}
-        >
-          ★
-        </span>
-      ))}
-      {currentRating && (
-        <button 
-          onClick={() => handleRemoveRating(movie_id)}
-          className="btn btn-secondary btn-small"
-        >
-          Remove Rating
-        </button>
-      )}
-    </div>
-  );
+  const StarRating = ({ movie_id, currentRating }) => {
+    const [hoverRating, setHoverRating] = useState(undefined);
+
+    return (
+      <div className="star-rating">
+        <span className="star-rating-label">Your Rating:</span>
+        {[1, 2, 3, 4, 5].map(star => (
+          <span
+            key={star}
+            onClick={() => handleRating(movie_id, star)}
+            onMouseEnter={() => setHoverRating(star)}
+            onMouseLeave={() => setHoverRating(0)}
+            className={`star ${
+              star <= (hoverRating || currentRating) ? 'star-filled' : 'star-empty'
+            }`}
+          >
+            ★
+          </span>
+        ))}
+        {currentRating && (
+          <button 
+            onClick={() => handleRemoveRating(movie_id)}
+            className="btn btn-secondary btn-small"
+          >
+            Remove Rating
+          </button>
+        )}
+      </div>
+    );
+  };
 
   if (!token) return (
     <div className="page-container">
@@ -130,7 +139,7 @@ export default function Watchlist({ token, userId }) {
                 <div className="movie-detail"><strong>Director:</strong> {m.director}</div>
                 <div className="movie-detail"><strong>Genre:</strong> {m.genre}</div>
                 <div className="movie-detail"><strong>Runtime:</strong> {m.run_time} min</div>
-                <div className="movie-detail"><strong>IMDB:</strong> {m.IMDB_rating} ({m.num_votes} votes)</div>
+                <div className="movie-detail"><strong>IMDB:</strong> {round((m.imdb_rating/2),1)} ({formatVotes(m.num_votes)} votes)</div>
                 <StarRating movie_id={m.movie_id} currentRating={userRatings[m.movie_id]} />
               </div>
               <div className="movie-actions">

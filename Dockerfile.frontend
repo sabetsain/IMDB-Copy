@@ -1,0 +1,6 @@
+FROM node:19-bullseye
+WORKDIR /frontend
+COPY /frontend /frontend
+RUN npm install
+EXPOSE 5173
+CMD [ "npm", "run", "dev" ]

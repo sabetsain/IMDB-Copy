@@ -1,34 +1,23 @@
-import os
+import jwt
+import datetime
+from flask import current_app
 
-from flask import redirect, url_for, render_template, session, request, flash, Blueprint
-from .user import User
+def generate_token(username):
+    """Generate a JWT token for a given username."""
+    payload = {
+        'username': username,
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+    }
+    token = jwt.encode(payload, current_app.config['SECRET_KEY'], algorithm='HS256')
 
-bp = Blueprint('auth', __name__)
+    if isinstance(token, bytes):
+        token = token.decode('utf-8')
+    return token
 
-@bp.route('/')
-def index():
-    return redirect(url_for('auth.login'))
-
-@bp.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        
-        user = User(username=username, password=password)
-
-        if user.is_authenticated():
-            session['username'] = username
-            
-            return redirect(url_for('auth.home_page', username=username))
-        else:
-            flash('Invalid username or password')
-    
-    return render_template('login.html')
-
-@bp.route('/user/<username>')
-def home_page(username):
-    if 'username' not in session or session['username'] != username:
-        return redirect(url_for('login'))
-    
-    return render_template('user.html')
+def verify_token(token):
+    """Verify a JWT token and return the username if valid, else None."""
+    try:
+        payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+        return payload['username']
+    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+        return None

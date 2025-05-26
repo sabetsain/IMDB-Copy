@@ -8,15 +8,11 @@ from flask import Flask
 from flask.cli import with_appcontext
 
 app = Flask(__name__)
+pg_uri = "postgresql://dis_project:dis_project@db:5432/imdb_copy"
+
 def get_db():
     if 'db' not in g:
-        g.db = psycopg.connect(
-            host="localhost",
-            dbname="imdb_copy",
-            user='dis_project',
-            password='dis_project'
-        )
-        # g.db.row_factory = psycopg.rows
+        g.db = psycopg.connect(pg_uri)
     return g.db
 
 def load_movies_csv():

@@ -1,7 +1,8 @@
+import { round} from "mathjs";
 import { useEffect, useState, useCallback } from "react";
 import { getMovies, getWatchlist, addToWatchlist, 
         removeFromWatchlist, addRating, changeRating, 
-        deleteRating, getUserRating } from "../api";
+        deleteRating, getUserRating, formatVotes } from "../api";
 
 export default function Movies({ token, userId }) {
   const [allMovies, setAllMovies] = useState([]);
@@ -105,7 +106,7 @@ export default function Movies({ token, userId }) {
       if (currentRating) {
         await changeRating(token, userId, movie_id, rating);
       } else {
-        await addRating(token, userId, movie_id, rating);
+        await addRating(token, userId, movie_id, rating * 2);
       }
       setUserRatings(prev => ({ ...prev, [movie_id]: rating }));
     } catch (error) {
@@ -200,7 +201,7 @@ export default function Movies({ token, userId }) {
               <div className="movie-detail"><strong>Director:</strong> {m.director}</div>
               <div className="movie-detail"><strong>Genre:</strong> {m.genre}</div>
               <div className="movie-detail"><strong>Runtime:</strong> {m.run_time} min</div>
-              <div className="movie-detail"><strong>IMDB:</strong> {m.IMDB_rating} ({m.num_votes} votes)</div>
+              <div className="movie-detail"><strong>IMDB:</strong> {round((m.imdb_rating/ 2),1)} ({formatVotes(m.num_votes)} votes)</div>
               <StarRating movie_id={m.movie_id} currentRating={userRatings[m.movie_id]} />
             </div>
             <div className="movie-actions">

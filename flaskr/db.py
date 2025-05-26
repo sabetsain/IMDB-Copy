@@ -7,7 +7,7 @@ import csv
 from flask import Flask
 
 app = Flask(__name__)
-pg_uri = "postgresql://dis_project:dis_project@localhost/imdb_copy"
+pg_uri = "postgresql://dis_project:dis_project@db:5432/imdb_copy"
 
 def get_db():
     if 'db' not in g:

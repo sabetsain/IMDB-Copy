@@ -189,7 +189,7 @@ def register():
         if cur.fetchone():
             return jsonify({'success': False, 'error': 'User already exists'}), 409
 
-        hashed_password = generate_password_hash(password)
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
         cur.execute("INSERT INTO user_profile (user_id, password) VALUES (%s, %s)", (username, hashed_password))
         db.commit()
     return jsonify({'success': True, 'message': 'User registered successfully'})

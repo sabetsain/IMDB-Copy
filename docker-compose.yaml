@@ -19,7 +19,7 @@ services:
     container_name: dis-client
     build:
       context: .
-      dockerfile: Dockerfile.client
+      dockerfile: Dockerfile.frontend
     # image: react-flask-app-client
     ports:
       - 5173:5173

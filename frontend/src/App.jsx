@@ -5,10 +5,13 @@ import Movies from "./components/Movies";
 import Actors from "./components/Actors";
 import Watchlist from "./components/Watchlist";
 import Register from "./components/Register";
+import Rated from "./components/Rated";
+import FavoriteActors from "./components/Favorite_Actors";
 import "./styles.css";
 
 function Navigation({ token, userId, handleLogout }) {
   const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
   
   return (
     <nav className="nav">
@@ -32,12 +35,6 @@ function Navigation({ token, userId, handleLogout }) {
           >
             Actors
           </Link>
-          <Link 
-            to="/watchlist"
-            className={location.pathname === '/watchlist' ? 'active' : ''}
-          >
-            Watchlist
-          </Link>
           {!token && (
             <Link 
               to="/register"
@@ -49,10 +46,51 @@ function Navigation({ token, userId, handleLogout }) {
         </div>
         
         {/* User Section */}
-        <div className="nav-user">
+        <div className="nav-user" style={{ position: "relative" }}>
           {token ? (
             <>
-              <span className="nav-welcome">👋 {userId}</span>
+              <button
+                className="nav-user-button"
+                onClick={() => setMenuOpen((open) => !open)}
+                aria-haspopup="true"
+                aria-expanded={menuOpen}
+              >
+                👋 {userId} ▼
+              </button>
+              {menuOpen && (
+                <div
+                  className="nav-user-menu"
+                  style={{
+                    position: "absolute",
+                    left: 0,
+                    top: "100%",
+                    marginTop: "5px",
+                    minWidth: "160px",
+                  }}
+                >
+                  <Link
+                    to="/favourite_actor"
+                    className="nav-user-menu-item"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Favourite Actors
+                  </Link>
+                  <Link
+                    to="/watchlist"
+                    className="nav-user-menu-item"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Watchlist
+                  </Link>
+                  <Link
+                    to="/rated_movies"
+                    className="nav-user-menu-item"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Rated Movies
+                  </Link>
+                </div>
+              )}
               <button onClick={handleLogout} className="nav-logout-btn">
                 Logout
               </button>
@@ -95,6 +133,8 @@ function App() {
         <Route path="/movies" element={<Movies token={token} userId={userId} />} />
         <Route path="/actors" element={<Actors token={token} userId={userId} />} />
         <Route path="/watchlist" element={<Watchlist token={token} userId={userId} />} />
+        <Route path="/rated_movies" element={<Rated token={token} userId={userId} />} />
+        <Route path="/favourite_actor" element={<FavoriteActors token={token} userId={userId} />} />
         <Route path="*" element={<Movies token={token} userId={userId} />} />
       </Routes>
     </BrowserRouter>

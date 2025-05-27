@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { getActors } from "../api";
+import { getActors, getFavouriteActors, addFavouriteActor, removeFavouriteActor } from "../api";
 
-export default function Actors({ token }) {
+export default function Actors({ token, userId }) {
   const [actors, setActors] = useState([]);
+  const [favActorIds, setFavActorIds] = useState(new Set());
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -10,6 +11,7 @@ export default function Actors({ token }) {
       setError("Please login to view actors.");
       return;
     }
+
     getActors(token).then(res => {
       if (res.success === false) setError(res.error);
       else if (res.actors && res.columns) {
@@ -17,11 +19,31 @@ export default function Actors({ token }) {
           Object.fromEntries(res.columns.map((col, i) => [col, row[i]]))
         );
         setActors(mapped);
-      } else {
-        setActors([]);
       }
     });
-  }, [token]);
+
+    getFavouriteActors(token, userId).then(res => {
+      if (res.success === false) setError(res.error);
+      else if (res.actors && res.columns) {
+        const favIds = new Set(res.actors.map(row => row[0])); // actor_id assumed at index 0
+        setFavActorIds(favIds);
+      }
+    });
+  }, [token, userId]);
+
+  const handleAddFavorite = async (actor_id) => {
+    await addFavouriteActor(token, userId, actor_id);
+    setFavActorIds(prev => new Set(prev).add(actor_id));
+  };
+
+  const handleRemoveFavorite = async (actor_id) => {
+    await removeFavouriteActor(token, userId, actor_id);
+    setFavActorIds(prev => {
+      const copy = new Set(prev);
+      copy.delete(actor_id);
+      return copy;
+    });
+  };
 
   if (!token) return (
     <div className="page-container">
@@ -33,10 +55,20 @@ export default function Actors({ token }) {
     <div className="page-container">
       <h2 className="page-title">Actors</h2>
       {error && <div className="error-message">{error}</div>}
+
       <div className="actor-list">
         {actors.map(a => (
           <div key={a.actor_id} className="actor-card">
             <div className="actor-name">{a.actor_name}</div>
+            {favActorIds.has(a.actor_id) ? (
+              <button className="btn btn-danger" onClick={() => handleRemoveFavorite(a.actor_id)}>
+                Remove from Favorites
+              </button>
+            ) : (
+              <button className="btn btn-primary" onClick={() => handleAddFavorite(a.actor_id)}>
+                Add to Favorites
+              </button>
+            )}
           </div>
         ))}
       </div>

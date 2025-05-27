@@ -609,3 +609,52 @@ html {
     height: 120px;
   }
 }
+.nav-user-button {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  color: #f5c518;
+  border: 1px solid #f5c518;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-user-button:hover,
+.nav-user-button:focus {
+  background: #f5c518;
+  color: #0f0f0f;
+  outline: none;
+}
+
+.nav-user-menu {
+  background-color: #1a1a1a;
+  border: 1px solid #f5c518;
+  box-shadow: 0 4px 12px rgba(245, 197, 24, 0.4);
+  border-radius: 8px;
+  min-width: 180px;
+  padding: 0.5rem 0;
+  z-index: 1000;
+}
+
+.nav-user-menu-item {
+  display: block;
+  padding: 0.5rem 1.2rem;
+  color: #f5c518;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+  border-left: 4px solid transparent;
+}
+
+.nav-user-menu-item:hover,
+.nav-user-menu-item:focus {
+  background-color: rgba(245, 197, 24, 0.15);
+  border-left: 4px solid #f5c518;
+  color: #daa520;
+  outline: none;
+}

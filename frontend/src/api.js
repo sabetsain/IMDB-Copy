@@ -38,6 +38,12 @@ export async function getWatchlist(token, userId) {
   });
   return res.json();
 }
+export async function getRatedMovies(token, userId) {
+  const res = await fetch(`${API_URL}/rated_movies/${userId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+}
 
 export async function addToWatchlist(token, userId, movie_id) {
   const res = await fetch(`${API_URL}/add_to_watchlist`, {
@@ -127,4 +133,34 @@ export async function getUserRating(token, userId, movie_id = null) {
     // Return all ratings
     return data;
   }
+}
+export async function getFavouriteActors(token, userId) {
+  const res = await fetch(`${API_URL}/favourite_actor/${userId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+}
+
+export async function addFavouriteActor(token, userId, actor_id) {
+  const res = await fetch(`${API_URL}/add_favourite_actor`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ user_id: userId, actor_id }),
+  });
+  return res.json();
+}
+
+export async function removeFavouriteActor(token, userId, actor_id) {
+  const res = await fetch(`${API_URL}/remove_favourite_actor`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ user_id: userId, actor_id }),
+  });
+  return res.json();
 }

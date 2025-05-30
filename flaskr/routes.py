@@ -128,6 +128,21 @@ def delete_rating():
 
     return jsonify({'success': True})
 
+@bp.route('/rated_movies/<user_id>', methods=['GET'])
+def show_rated_movies(user_id):
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute("""
+            SELECT m.movie_id, m.poster_url, m.title, m.year, m.director, m.genre, m.run_time, 
+                   m.IMDB_rating, m.num_votes, r.rating AS user_rating
+            FROM rating r
+            JOIN movie m ON r.movie_id = m.movie_id
+            WHERE r.user_id = %s
+        """, (user_id,))
+        movies = cur.fetchall()
+        column_names = [desc[0] for desc in cur.description]
+    return jsonify({'movies': movies, 'columns': column_names})
+
 @bp.route('/rating/<user_id>', methods=['GET'])
 def show_rating(user_id):
     db = get_db()

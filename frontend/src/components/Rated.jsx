@@ -1,5 +1,5 @@
 import { round } from "mathjs";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { getRatedMovies, addToWatchlist, removeFromWatchlist, addRating, changeRating, deleteRating, getUserRating, formatVotes, getWatchlist } from "../api";
 
 export default function RatedMovies({ token, userId }) {
@@ -7,6 +7,10 @@ export default function RatedMovies({ token, userId }) {
   const [userRatings, setUserRatings] = useState({});
   const [watchlist, setWatchlist] = useState([]);
   const [error, setError] = useState("");
+
+  const filteredMovies = useMemo(() => {
+    return SearchMovies(input, allMovies);
+  }, [input, ratedMovies]);
 
   useEffect(() => {
     if (!token || !userId) {
@@ -148,7 +152,7 @@ export default function RatedMovies({ token, userId }) {
         </div>
       ) : (
         <div className="content-list">
-          {ratedMovies.map(m => (
+          {filteredMovies.map(m => (
             <div key={m.movie_id} className="movie-card">
               <img src={m.poster_url} alt={m.title} className="movie-poster" />
               <div className="movie-info">

@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { getActors, getFavouriteActors, addFavouriteActor, removeFavouriteActor } from "../api";
+import { SearchActors } from "./Search";
 
-export default function Actors({ token, userId }) {
+export default function Actors({ token, userId, input }) {
   const [actors, setActors] = useState([]);
   const [favActorIds, setFavActorIds] = useState(new Set());
   const [error, setError] = useState("");
+
+  const filteredActors = useMemo(() => {
+    return SearchActors(input, actors);
+  }, [input, actors]);
 
   useEffect(() => {
     if (!token) {
@@ -57,7 +62,7 @@ export default function Actors({ token, userId }) {
       {error && <div className="error-message">{error}</div>}
 
       <div className="actor-list">
-        {actors.map(a => (
+        {filteredActors.map(a => (
           <div key={a.actor_id} className="actor-card">
             <div className="actor-name">{a.actor_name}</div>
             {favActorIds.has(a.actor_id) ? (

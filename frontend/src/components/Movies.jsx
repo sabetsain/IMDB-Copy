@@ -189,12 +189,10 @@ export default function Movies({ token, userId, input}) {
       {error && <div className="error-message">{error}</div>}
       
       <div className="movies-stats">
-        {/* Showing {filteredMovies.length} of {allMovies.length} movies */}
         Showing {displayedMovies.length} of {allMovies.length} movies
       </div>
 
       <div className="content-list">
-        {/* {filteredMovies.map(m => ( */}
         {filteredMovies.map(m => (
           <div key={m.movie_id} className="movie-card">
             <img 

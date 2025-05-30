@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 import { getFavouriteActors, removeFavouriteActor } from "../api";
+import SearchActors from "./Search";
 
-export default function FavoriteActors({ token, userId }) {
+export default function FavoriteActors({ token, userId, input }) {
   const [favActors, setFavActors] = useState([]);
   const [error, setError] = useState("");
+
+  const filteredActors = useMemo(() => {
+    return SearchActors(input, actors);
+  }, [input, actors]);
 
   useEffect(() => {
     if (!token) {
@@ -47,7 +52,7 @@ export default function FavoriteActors({ token, userId }) {
         </div>
       ) : (
         <div className="actor-list">
-          {favActors.map(a => (
+          {filteredActors.map(a => (
             <div key={a.actor_id} className="actor-card">
               <div className="actor-name">{a.actor_name}</div>
               <button className="btn btn-danger" onClick={() => handleRemove(a.actor_id)}>

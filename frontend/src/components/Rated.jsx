@@ -1,15 +1,16 @@
 import { round } from "mathjs";
 import { useEffect, useState, useMemo } from "react";
 import { getRatedMovies, addToWatchlist, removeFromWatchlist, addRating, changeRating, deleteRating, getUserRating, formatVotes, getWatchlist } from "../api";
+import SearchMovies from "./Search";
 
-export default function RatedMovies({ token, userId }) {
+export default function RatedMovies({ token, userId, input }) {
   const [ratedMovies, setRatedMovies] = useState([]);
   const [userRatings, setUserRatings] = useState({});
   const [watchlist, setWatchlist] = useState([]);
   const [error, setError] = useState("");
 
   const filteredMovies = useMemo(() => {
-    return SearchMovies(input, allMovies);
+    return SearchMovies(input, ratedMovies);
   }, [input, ratedMovies]);
 
   useEffect(() => {

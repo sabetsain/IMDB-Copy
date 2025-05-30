@@ -134,16 +134,12 @@ export default function Movies({ token, userId, input}) {
 
   const handleAdd = async (movie_id) => {
     await addToWatchlist(token, userId, movie_id);
-    getWatchlist(token, userId).then(result => {
-      if (result.movies) setWatchlist(result.movies.map(m => m[0]));
-    });
+    setWatchlist(prev => [...prev, movie_id]);
   };
 
   const handleRemove = async (movie_id) => {
     await removeFromWatchlist(token, userId, movie_id);
-    getWatchlist(token, userId).then(result => {
-      if (result.movies) setWatchlist(result.movies.map(m => m[0]));
-    });
+    setWatchlist(prev => prev.filter(id => id !== movie_id));
   };
 
   const StarRating = ({ movie_id, currentRating }) => {

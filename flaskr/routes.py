@@ -2,6 +2,9 @@ from flask import Blueprint, request, jsonify
 from .db import get_db
 from .auth import generate_token, verify_token
 from werkzeug.security import generate_password_hash, check_password_hash
+import re
+
+VALID_USERNAME = r'[_a-zA-Z0-9\.\-]+'
 
 bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -231,6 +234,8 @@ def login():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
+    if (re.fullmatch(VALID_USERNAME, username) == None):
+        return jsonify({'success': False, 'error': 'Invalid username format'}), 401
     db = get_db()
     with db.cursor() as cur:
         cur.execute("SELECT password FROM user_profile WHERE user_id=%s", (username,))
@@ -245,6 +250,8 @@ def login():
 def register():
     data = request.get_json()
     username = data.get('username')
+    if (re.fullmatch(VALID_USERNAME, username) == None):
+        return jsonify({'success': False, 'error': 'Invalid username format'}), 401
     password = data.get('password')
     if not username or not password:
         return jsonify({'success': False, 'error': 'Username and password required'}), 400

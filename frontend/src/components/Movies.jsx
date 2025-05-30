@@ -1,10 +1,11 @@
 import { round} from "mathjs";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { getMovies, getWatchlist, addToWatchlist, 
         removeFromWatchlist, addRating, changeRating, 
         deleteRating, getUserRating, formatVotes } from "../api";
+import SearchMovies from "./Search";
 
-export default function Movies({ token, userId }) {
+export default function Movies({ token, userId, input}) {
   const [allMovies, setAllMovies] = useState([]);
   const [displayedMovies, setDisplayedMovies] = useState([]);
   const [watchlist, setWatchlist] = useState([]);
@@ -15,6 +16,10 @@ export default function Movies({ token, userId }) {
   const [hasMore, setHasMore] = useState(true);
 
   const MOVIES_PER_PAGE = 20; 
+
+  const filteredMovies = useMemo(() => {
+    return SearchMovies(input, allMovies);
+  }, [input, allMovies]);
 
   // Fetch all movies once
   useEffect(() => {
@@ -61,16 +66,16 @@ export default function Movies({ token, userId }) {
     const nextPage = currentPage + 1;
     const startIndex = currentPage * MOVIES_PER_PAGE;
     const endIndex = startIndex + MOVIES_PER_PAGE;
-    const newMovies = allMovies.slice(startIndex, endIndex);
+    const newMovies = displayedMovies.slice(startIndex, endIndex);
 
     if (newMovies.length > 0) {
       setDisplayedMovies(prev => [...prev, ...newMovies]);
       setCurrentPage(nextPage);
-      setHasMore(endIndex < allMovies.length);
+      setHasMore(endIndex < displayedMovies.length);
     } else {
       setHasMore(false);
     }
-  }, [currentPage, allMovies, loading, hasMore]);
+  }, [currentPage, allMovies, loading, hasMore, displayedMovies]);
 
   // Infinite scroll detection
   useEffect(() => {
@@ -184,11 +189,13 @@ export default function Movies({ token, userId }) {
       {error && <div className="error-message">{error}</div>}
       
       <div className="movies-stats">
+        {/* Showing {filteredMovies.length} of {allMovies.length} movies */}
         Showing {displayedMovies.length} of {allMovies.length} movies
       </div>
 
       <div className="content-list">
-        {displayedMovies.map(m => (
+        {/* {filteredMovies.map(m => ( */}
+        {filteredMovies.map(m => (
           <div key={m.movie_id} className="movie-card">
             <img 
               src={m.poster_url} 

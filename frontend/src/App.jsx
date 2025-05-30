@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
+import InputBase from '@mui/material/InputBase';
+import Paper from '@mui/material/Paper';
 import Login from "./components/Login";
 import Movies from "./components/Movies";
 import Actors from "./components/Actors";
@@ -9,10 +11,11 @@ import Rated from "./components/Rated";
 import FavoriteActors from "./components/Favorite_Actors";
 import "./styles.css";
 
+
 function Navigation({ token, userId, handleLogout }) {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  
+
   return (
     <nav className="nav">
       <div className="nav-container">
@@ -23,6 +26,18 @@ function Navigation({ token, userId, handleLogout }) {
         
         {/* Navigation Links */}
         <div className="nav-links">
+          {/* <Paper
+            component="form"
+            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+          >
+              <InputBase
+                id="outlined-basic"
+                sx={{ ml: 1, flex: 1 }}
+                placeholder="Search..."
+                inputProps={{ 'aria-label': 'search' }}
+                onChange={inputHandler}
+              />
+          </Paper> */}
           <Link 
             to="/movies" 
             className={location.pathname === '/movies' ? 'active' : ''}
@@ -43,6 +58,7 @@ function Navigation({ token, userId, handleLogout }) {
               Register
             </Link>
           )}
+
         </div>
         
         {/* User Section */}
@@ -109,6 +125,7 @@ function Navigation({ token, userId, handleLogout }) {
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [userId, setUserId] = useState(localStorage.getItem("userId") || "");
+  const [inputText, setInputText] = useState("");
 
   const handleLogin = (token, username) => {
     setToken(token);
@@ -124,14 +141,34 @@ function App() {
     localStorage.removeItem("userId");
   };
 
+  let inputHandler = (e) => {
+    //convert input text to lower case
+    var lowerCase = e.target.value.toLowerCase();
+    setInputText(lowerCase);
+  };
+
   return (
     <BrowserRouter>
       <Navigation token={token} userId={userId} handleLogout={handleLogout} />
+      <div style={{ display: "flex", justifyContent: "center", margin: "20px 0" }}>
+        <Paper
+          component="form"
+          sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+        >
+          <InputBase
+            id="outlined-basic"
+            sx={{ ml: 1, flex: 1 }}
+            placeholder="Search..."
+            inputProps={{ 'aria-label': 'search' }}
+            onChange={inputHandler}
+          />
+        </Paper>
+      </div>
       <Routes>
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/movies" element={<Movies token={token} userId={userId} />} />
-        <Route path="/actors" element={<Actors token={token} userId={userId} />} />
+        <Route path="/movies" element={<Movies token={token} userId={userId} input={inputText} />} />
+        <Route path="/actors" element={<Actors token={token} userId={userId} input={inputText} />} />
         <Route path="/watchlist" element={<Watchlist token={token} userId={userId} />} />
         <Route path="/rated_movies" element={<Rated token={token} userId={userId} />} />
         <Route path="/favourite_actor" element={<FavoriteActors token={token} userId={userId} />} />

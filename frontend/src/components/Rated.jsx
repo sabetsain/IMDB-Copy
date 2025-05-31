@@ -55,10 +55,10 @@ export default function Watchlist({ token, userId, input }) {
     try {
       const res = await getWatchlist(token, userId);
       if (res.movies && res.columns) {
-        const mapped = res.movies.map(row =>
+        const movieIds = res.movies.map(row =>
           Object.fromEntries(res.columns.map((col, i) => [col, row[i]]))
-        );
-        setWatchlist(mapped);
+        ).map(movie => movie.movie_id);
+        setWatchlist(movieIds);
       } else {
         setWatchlist([]);
       }

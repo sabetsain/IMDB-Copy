@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
 import InputBase from '@mui/material/InputBase';
 import Paper from '@mui/material/Paper';
@@ -10,9 +10,10 @@ import Register from "./components/Register";
 import Rated from "./components/Rated";
 import FavoriteActors from "./components/Favorite_Actors";
 import "./styles.css";
+import { debounce } from 'lodash';
 
 
-function Navigation({ token, userId, handleLogout }) {
+function Navigation({ token, userId, handleLogout, inputHandler }) {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -24,20 +25,24 @@ function Navigation({ token, userId, handleLogout }) {
           IMDB Clone
         </Link>
         
+        {/* Search bar */}
+        <div className="nav-search">
+          <Paper
+            component="form"
+            className="nav-search-box"
+            elevation={0}
+            style={{ display: 'flex', flexGrow: 1 }} 
+          >
+            <InputBase
+              sx={{ flex: 1 }} 
+              placeholder="Search IMDB"
+              inputProps={{ 'aria-label': 'search imdb' }}
+              onChange={inputHandler}
+            />
+          </Paper>
+        </div>
         {/* Navigation Links */}
         <div className="nav-links">
-          {/* <Paper
-            component="form"
-            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
-          >
-              <InputBase
-                id="outlined-basic"
-                sx={{ ml: 1, flex: 1 }}
-                placeholder="Search..."
-                inputProps={{ 'aria-label': 'search' }}
-                onChange={inputHandler}
-              />
-          </Paper> */}
           <Link 
             to="/movies" 
             className={location.pathname === '/movies' ? 'active' : ''}
@@ -141,29 +146,17 @@ function App() {
     localStorage.removeItem("userId");
   };
 
-  let inputHandler = (e) => {
-    //convert input text to lower case
-    var lowerCase = e.target.value.toLowerCase();
-    setInputText(lowerCase);
-  };
+  const inputHandler = useCallback(
+    debounce((e) => {
+      const value = e.target.value.toLowerCase();
+      setInputText(value);
+    }, 200),
+    []
+  );
 
   return (
     <BrowserRouter>
-      <Navigation token={token} userId={userId} handleLogout={handleLogout} />
-      <div style={{ display: "flex", justifyContent: "center", margin: "20px 0" }}>
-        <Paper
-          component="form"
-          sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
-        >
-          <InputBase
-            id="outlined-basic"
-            sx={{ ml: 1, flex: 1 }}
-            placeholder="Search..."
-            inputProps={{ 'aria-label': 'search' }}
-            onChange={inputHandler}
-          />
-        </Paper>
-      </div>
+      <Navigation token={token} userId={userId} handleLogout={handleLogout} inputHandler={inputHandler} />
       <Routes>
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/register" element={<Register />} />

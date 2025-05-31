@@ -186,10 +186,16 @@ export default function Movies({ token, userId, input}) {
       
       <div className="movies-stats">
         {/* Showing {filteredMovies.length} of {allMovies.length} movies */}
-        Showing {displayedMovies.length} of {allMovies.length} movies
+        Showing {Math.min(displayedMovies.length, filteredMovies.length)} of {allMovies.length} movies
       </div>
 
-      <div className="content-list">
+      {filteredMovies.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-state-title">No movies found</div>
+          <div className="empty-state-message">Try a different search keyword.</div>
+        </div>
+      ) : (
+        <div className="content-list">
         {/* {filteredMovies.map(m => ( */}
         {filteredMovies.map(m => (
           <div key={m.movie_id} className="movie-card">
@@ -221,6 +227,7 @@ export default function Movies({ token, userId, input}) {
           </div>
         ))}
       </div>
+      )}
 
       {/* Loading indicator */}
       {loading && (
@@ -231,7 +238,7 @@ export default function Movies({ token, userId, input}) {
       )}
 
       {/* Load more button (fallback for infinite scroll) */}
-      {!loading && hasMore && (
+      {!loading && hasMore && filteredMovies.length >= 20 && (
         <div className="load-more-container">
           <button onClick={loadMoreMovies} className="btn btn-primary load-more-btn">
             Load More Movies

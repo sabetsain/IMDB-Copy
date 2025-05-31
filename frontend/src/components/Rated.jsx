@@ -146,7 +146,7 @@ export default function Watchlist({ token, userId, input }) {
     <div className="page-container">
       <h2 className="page-title">Movies You've Rated</h2>
       {error && <div className="error-message">{error}</div>}
-      {ratedMovies.length === 0 ? (
+      {filteredMovies.length === 0 ? (
         <div className="empty-state">
           <div className="empty-state-title">You have not rated any movies yet.</div>
           <div className="empty-state-message">Start rating movies to see them here!</div>

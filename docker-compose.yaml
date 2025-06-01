@@ -34,4 +34,4 @@ services:
         condition: service_healthy    
     links: 
         - db # This links to the above defined 'db'
-    command: ["flask", "init-db"]
+    # command: ["flask", "init-db"]

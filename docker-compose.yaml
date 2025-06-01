@@ -1,4 +1,16 @@
 services:
+  flaskr:
+    container_name: dis-flaskr
+    build:
+      context: .
+      dockerfile: Dockerfile.flaskr
+    ports:
+      - 5001:5001  
+    depends_on:
+      db:
+        condition: service_healthy    
+    links: 
+        - db # This links to the above defined 'db'
   db:
     image: postgres
     container_name: db
@@ -22,16 +34,4 @@ services:
       dockerfile: Dockerfile.frontend
     ports:
       - 5173:5173
-  flaskr:
-    container_name: dis-flaskr
-    build:
-      context: .
-      dockerfile: Dockerfile.flaskr
-    ports:
-      - 5001:5001  
-    depends_on:
-      db:
-        condition: service_healthy    
-    links: 
-        - db # This links to the above defined 'db'
     # command: ["flask", "init-db"]

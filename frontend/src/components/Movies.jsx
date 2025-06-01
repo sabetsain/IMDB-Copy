@@ -94,7 +94,7 @@ export default function Movies({ token, userId, input}) {
       const ratings = {};
       if (result.ratings) {
         result.ratings.forEach(([movie_id, rating]) => {
-          ratings[movie_id] = rating
+          ratings[movie_id] = rating / 2;
         });
       }
       setUserRatings(ratings);
@@ -107,7 +107,7 @@ export default function Movies({ token, userId, input}) {
     const currentRating = userRatings[movie_id];
     try {
       if (currentRating) {
-        await changeRating(token, userId, movie_id, rating);
+        await changeRating(token, userId, movie_id, rating * 2);
       } else {
         await addRating(token, userId, movie_id, rating * 2);
       }

@@ -8,7 +8,7 @@ from flask import Flask
 from flask.cli import with_appcontext
 
 app = Flask(__name__)
-#pg_uri = "postgresql://dis_project:dis_project@localhost:5432/imdb_copy"
+# pg_uri = "postgresql://dis_project:dis_project@localhost:5432/imdb_copy"
 pg_uri = "postgresql://dis_project:dis_project@db:5432/imdb_copy"
 
 def get_db():

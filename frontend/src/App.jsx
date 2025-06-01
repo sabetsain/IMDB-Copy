@@ -165,7 +165,7 @@ function App() {
         <Route path="/watchlist" element={<Watchlist token={token} userId={userId} input={inputText} />} />
         <Route path="/rated_movies" element={<Rated token={token} userId={userId} input={inputText} />} />
         <Route path="/favourite_actor" element={<FavoriteActors token={token} userId={userId} input={inputText} />} />
-        <Route path="*" element={<Movies token={token} userId={userId} />} />
+        <Route path="*" element={<Movies token={token} userId={userId} input={inputText} />} />
       </Routes>
     </BrowserRouter>
   );

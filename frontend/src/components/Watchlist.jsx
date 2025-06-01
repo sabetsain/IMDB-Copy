@@ -2,6 +2,7 @@ import { round } from "mathjs";
 import { useEffect, useState, useMemo } from "react";
 import { getWatchlist, removeFromWatchlist, addRating, changeRating, deleteRating, getUserRating, formatVotes } from "../api";
 import SearchMovies from "./Search";
+import SearchMovies from "./Search";
 
 export default function Watchlist({ token, userId, input }) {
   const [watchlist, setWatchlist] = useState([]);

@@ -96,7 +96,7 @@ export default function Movies({ token, userId, input}) {
       const ratings = {};
       if (result.ratings) {
         result.ratings.forEach(([movie_id, rating]) => {
-          ratings[movie_id] = rating;
+          ratings[movie_id] = rating / 2 // Converted back to 1-5 scale;
         });
       }
       setUserRatings(ratings);

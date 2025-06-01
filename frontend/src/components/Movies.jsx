@@ -7,7 +7,6 @@ import SearchMovies from "./Search";
 
 export default function Movies({ token, userId, input}) {
   const [allMovies, setAllMovies] = useState([]);
-  const [displayedMovies, setDisplayedMovies] = useState([]);
   const [watchlist, setWatchlist] = useState([]);
   const [userRatings, setUserRatings] = useState({});
   const [error, setError] = useState("");
@@ -21,6 +20,10 @@ export default function Movies({ token, userId, input}) {
     return SearchMovies(input, allMovies);
   }, [input, allMovies]);
 
+  const paginatedMovies = useMemo(() => {
+    const endIndex = currentPage * MOVIES_PER_PAGE;
+    return filteredMovies.slice(0, endIndex);
+  }, [filteredMovies, currentPage]);
   // Fetch all movies once
   useEffect(() => {
     if (!token) {
@@ -38,13 +41,11 @@ export default function Movies({ token, userId, input}) {
         setAllMovies(mapped);
         
         // Load first batch
-        setDisplayedMovies(mapped.slice(0, MOVIES_PER_PAGE));
         setHasMore(mapped.length > MOVIES_PER_PAGE);
         
         fetchUserRatings();
       } else {
         setAllMovies([]);
-        setDisplayedMovies([]);
       }
       setLoading(false);
     });
@@ -58,24 +59,21 @@ export default function Movies({ token, userId, input}) {
       else setWatchlist(result.movies ? result.movies.map(m => m[0]) : []);
     });
   }, [token, userId]);
+  useEffect(() => {
+    setCurrentPage(1);
+    setHasMore(filteredMovies.length > MOVIES_PER_PAGE);
+  }, [input, filteredMovies.length]);
 
   // Load more movies when scrolling
   const loadMoreMovies = useCallback(() => {
     if (loading || !hasMore) return;
 
     const nextPage = currentPage + 1;
-    const startIndex = currentPage * MOVIES_PER_PAGE;
-    const endIndex = startIndex + MOVIES_PER_PAGE;
-    const newMovies = displayedMovies.slice(startIndex, endIndex);
+    const endIndex = nextPage * MOVIES_PER_PAGE;
 
-    if (newMovies.length > 0) {
-      setDisplayedMovies(prev => [...prev, ...newMovies]);
-      setCurrentPage(nextPage);
-      setHasMore(endIndex < displayedMovies.length);
-    } else {
-      setHasMore(false);
-    }
-  }, [currentPage, allMovies, loading, hasMore, displayedMovies]);
+    setCurrentPage(nextPage);
+    setHasMore(endIndex < filteredMovies.length);
+  }, [currentPage, filteredMovies.length, loading, hasMore]);
 
   // Infinite scroll detection
   useEffect(() => {
@@ -96,7 +94,7 @@ export default function Movies({ token, userId, input}) {
       const ratings = {};
       if (result.ratings) {
         result.ratings.forEach(([movie_id, rating]) => {
-          ratings[movie_id] = rating / 2 // Converted back to 1-5 scale;
+          ratings[movie_id] = rating
         });
       }
       setUserRatings(ratings);
@@ -185,7 +183,8 @@ export default function Movies({ token, userId, input}) {
       {error && <div className="error-message">{error}</div>}
       
       <div className="movies-stats">
-        Showing {Math.min(displayedMovies.length, filteredMovies.length)} of {allMovies.length} movies
+        {/* Showing {filteredMovies.length} of {allMovies.length} movies */}
+        Showing { paginatedMovies.length} of {filteredMovies.length} movies
       </div>
 
       {filteredMovies.length === 0 ? (
@@ -195,7 +194,8 @@ export default function Movies({ token, userId, input}) {
         </div>
       ) : (
         <div className="content-list">
-        {filteredMovies.map(m => (
+        {/* {filteredMovies.map(m => ( */}
+        {paginatedMovies.map(m => (
           <div key={m.movie_id} className="movie-card">
             <img 
               src={m.poster_url} 
@@ -245,7 +245,7 @@ export default function Movies({ token, userId, input}) {
       )}
 
       {/* End of list indicator */}
-      {!hasMore && displayedMovies.length > 0 && (
+      {!hasMore && paginatedMovies.length > 0 && (
         <div className="end-of-list">
           <p>You've seen all movies!</p>
         </div>

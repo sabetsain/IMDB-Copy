@@ -5,7 +5,6 @@ import SearchMovies from "./Search";
 import SearchMovies from "./Search";
 
 export default function Watchlist({ token, userId, input }) {
-export default function Watchlist({ token, userId, input }) {
   const [watchlist, setWatchlist] = useState([]);
   const [userRatings, setUserRatings] = useState({});
   const [error, setError] = useState("");

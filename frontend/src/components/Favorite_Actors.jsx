@@ -7,8 +7,8 @@ export default function FavoriteActors({ token, userId, input }) {
   const [error, setError] = useState("");
 
   const filteredActors = useMemo(() => {
-    return SearchActors(input, actors);
-  }, [input, actors]);
+    return SearchActors(input, favActors);
+  }, [input, favActors]);
 
   useEffect(() => {
     if (!token) {

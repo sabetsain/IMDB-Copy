@@ -2,15 +2,17 @@ import { round } from "mathjs";
 import { useEffect, useState, useMemo } from "react";
 import { getWatchlist, removeFromWatchlist, addRating, changeRating, deleteRating, getUserRating, formatVotes } from "../api";
 import SearchMovies from "./Search";
+import SearchMovies from "./Search";
 
+export default function Watchlist({ token, userId, input }) {
 export default function Watchlist({ token, userId, input }) {
   const [watchlist, setWatchlist] = useState([]);
   const [userRatings, setUserRatings] = useState({});
   const [error, setError] = useState("");
 
   const filteredMovies = useMemo(() => {
-      return SearchMovies(input, watchlist);
-    }, [input, watchlist]);
+    return SearchMovies(input, watchlist);
+  }, [input, watchlist]);
 
   useEffect(() => {
     if (!token || !userId) {
@@ -129,14 +131,15 @@ export default function Watchlist({ token, userId, input }) {
     <div className="page-container">
       <h2 className="page-title">My Watchlist</h2>
       {error && <div className="error-message">{error}</div>}
-      {watchlist.length === 0 ? (
+
+      {filteredMovies.length === 0 ? (
         <div className="empty-state">
           <div className="empty-state-title">Your watchlist is empty</div>
           <div className="empty-state-message">Start adding movies to build your watchlist!</div>
         </div>
       ) : (
         <div className="content-list">
-          {filteredMovies.map(m => (
+          {filteredMovies.map((m) => (
             <div key={m.movie_id} className="movie-card">
               <img src={m.poster_url} alt={m.title} className="movie-poster" />
               <div className="movie-info">

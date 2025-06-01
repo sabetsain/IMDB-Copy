@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { getFavouriteActors, removeFavouriteActor } from "../api";
-import SearchActors from "./Search";
+import { SearchActors } from "./Search";
 
+export default function FavoriteActors({ token, userId, input }) {
 export default function FavoriteActors({ token, userId, input }) {
   const [favActors, setFavActors] = useState([]);
   const [error, setError] = useState("");
-
   const filteredActors = useMemo(() => {
     return SearchActors(input, favActors);
   }, [input, favActors]);
@@ -45,13 +45,14 @@ export default function FavoriteActors({ token, userId, input }) {
       <h2 className="page-title">Favorite Actors</h2>
       {error && <div className="error-message">{error}</div>}
 
-      {favActors.length === 0 ? (
+      {filteredActors.length === 0 ? (
         <div className="empty-state">
           <div className="empty-state-title">Your Favorite actor list is empty</div>
           <div className="empty-state-message">Start adding actors to build your list!</div>
         </div>
       ) : (
         <div className="actor-list">
+          {filteredActors.map(a => (
           {filteredActors.map(a => (
             <div key={a.actor_id} className="actor-card">
               <div className="actor-name">{a.actor_name}</div>

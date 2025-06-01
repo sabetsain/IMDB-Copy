@@ -2,14 +2,16 @@ import { round } from "mathjs";
 import { useEffect, useState, useMemo } from "react";
 import { getRatedMovies, addToWatchlist, removeFromWatchlist, addRating, changeRating, deleteRating, getUserRating, formatVotes, getWatchlist } from "../api";
 import SearchMovies from "./Search";
+import SearchMovies from "./Search";
 
-export default function RatedMovies({ token, userId, input }) {
+export default function Watchlist({ token, userId, input }) {
   const [ratedMovies, setRatedMovies] = useState([]);
   const [userRatings, setUserRatings] = useState({});
   const [watchlist, setWatchlist] = useState([]);
   const [error, setError] = useState("");
 
   const filteredMovies = useMemo(() => {
+    return SearchMovies(input, ratedMovies);
     return SearchMovies(input, ratedMovies);
   }, [input, ratedMovies]);
 
@@ -55,10 +57,10 @@ export default function RatedMovies({ token, userId, input }) {
     try {
       const res = await getWatchlist(token, userId);
       if (res.movies && res.columns) {
-        const mapped = res.movies.map(row =>
+        const movieIds = res.movies.map(row =>
           Object.fromEntries(res.columns.map((col, i) => [col, row[i]]))
-        );
-        setWatchlist(mapped.map(m => m.movie_id));
+        ).map(movie => movie.movie_id);
+        setWatchlist(movieIds);
       } else {
         setWatchlist([]);
       }
@@ -146,7 +148,7 @@ export default function RatedMovies({ token, userId, input }) {
     <div className="page-container">
       <h2 className="page-title">Movies You've Rated</h2>
       {error && <div className="error-message">{error}</div>}
-      {ratedMovies.length === 0 ? (
+      {filteredMovies.length === 0 ? (
         <div className="empty-state">
           <div className="empty-state-title">You have not rated any movies yet.</div>
           <div className="empty-state-message">Start rating movies to see them here!</div>

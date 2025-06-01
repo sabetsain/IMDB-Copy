@@ -134,16 +134,12 @@ export default function Movies({ token, userId, input}) {
 
   const handleAdd = async (movie_id) => {
     await addToWatchlist(token, userId, movie_id);
-    getWatchlist(token, userId).then(result => {
-      if (result.movies) setWatchlist(result.movies.map(m => m[0]));
-    });
+    setWatchlist(prev => [...prev, movie_id]);
   };
 
   const handleRemove = async (movie_id) => {
     await removeFromWatchlist(token, userId, movie_id);
-    getWatchlist(token, userId).then(result => {
-      if (result.movies) setWatchlist(result.movies.map(m => m[0]));
-    });
+    setWatchlist(prev => prev.filter(id => id !== movie_id));
   };
 
   const StarRating = ({ movie_id, currentRating }) => {
@@ -189,10 +185,18 @@ export default function Movies({ token, userId, input}) {
       {error && <div className="error-message">{error}</div>}
       
       <div className="movies-stats">
-        Showing {displayedMovies.length} of {allMovies.length} movies
+        {/* Showing {filteredMovies.length} of {allMovies.length} movies */}
+        Showing {Math.min(displayedMovies.length, filteredMovies.length)} of {allMovies.length} movies
       </div>
 
-      <div className="content-list">
+      {filteredMovies.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-state-title">No movies found</div>
+          <div className="empty-state-message">Try a different search keyword.</div>
+        </div>
+      ) : (
+        <div className="content-list">
+        {/* {filteredMovies.map(m => ( */}
         {filteredMovies.map(m => (
           <div key={m.movie_id} className="movie-card">
             <img 
@@ -223,6 +227,7 @@ export default function Movies({ token, userId, input}) {
           </div>
         ))}
       </div>
+      )}
 
       {/* Loading indicator */}
       {loading && (
@@ -233,7 +238,7 @@ export default function Movies({ token, userId, input}) {
       )}
 
       {/* Load more button (fallback for infinite scroll) */}
-      {!loading && hasMore && (
+      {!loading && hasMore && filteredMovies.length >= 20 && (
         <div className="load-more-container">
           <button onClick={loadMoreMovies} className="btn btn-primary load-more-btn">
             Load More Movies

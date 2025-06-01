@@ -14,6 +14,12 @@ A Flask-based web application that replicates core IMDB functionality with a Pos
 If you have docker installed, you can simply run the command 'docker compose up' in the terminal,
 and the application will run.
 
+If running in docker container, then in the file "frontend/src/api.js" make sure that line 2 is commented out and
+that line 1 is not. As well, in the file "flaskr/db.py", make sure that line 11 is commented out and that line 12
+is not.
+
+If not running in a docker container, then be sure of the opposite.
+
 ## Installation w/o Docker
 
 1. Clone this repository:

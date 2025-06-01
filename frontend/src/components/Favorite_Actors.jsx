@@ -3,6 +3,7 @@ import { getFavouriteActors, removeFavouriteActor } from "../api";
 import { SearchActors } from "./Search";
 
 export default function FavoriteActors({ token, userId, input }) {
+export default function FavoriteActors({ token, userId, input }) {
   const [favActors, setFavActors] = useState([]);
   const [error, setError] = useState("");
   const filteredActors = useMemo(() => {
@@ -51,6 +52,7 @@ export default function FavoriteActors({ token, userId, input }) {
         </div>
       ) : (
         <div className="actor-list">
+          {filteredActors.map(a => (
           {filteredActors.map(a => (
             <div key={a.actor_id} className="actor-card">
               <div className="actor-name">{a.actor_name}</div>

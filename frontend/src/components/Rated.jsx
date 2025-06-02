@@ -11,7 +11,6 @@ export default function Watchlist({ token, userId, input }) {
 
   const filteredMovies = useMemo(() => {
     return SearchMovies(input, ratedMovies);
-    return SearchMovies(input, ratedMovies);
   }, [input, ratedMovies]);
 
   useEffect(() => {
@@ -43,7 +42,7 @@ export default function Watchlist({ token, userId, input }) {
       const ratings = {};
       if (res.ratings) {
         res.ratings.forEach(([movie_id, rating]) => {
-          ratings[movie_id] = rating;
+          ratings[movie_id] = rating / 2;
         });
       }
       setUserRatings(ratings);

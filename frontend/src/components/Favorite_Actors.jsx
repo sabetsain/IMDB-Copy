@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { getFavouriteActors, removeFavouriteActor } from "../api";
-import { SearchActors } from "./Search";
+import { SearchActors } from "../helperFun";
 
 export default function FavoriteActors({ token, userId, input }) {
   const [favActors, setFavActors] = useState([]);

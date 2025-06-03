@@ -132,6 +132,7 @@ function App() {
   const [userId, setUserId] = useState(localStorage.getItem("userId") || "");
   const [inputText, setInputText] = useState("");
 
+  // Handle login and store token and userId in state and localStorage
   const handleLogin = (token, username) => {
     setToken(token);
     setUserId(username);
@@ -139,6 +140,7 @@ function App() {
     localStorage.setItem("userId", username);
   };
 
+  // Handle logout and clear token and userId from state and localStorage
   const handleLogout = () => {
     setToken("");
     setUserId("");
@@ -146,6 +148,7 @@ function App() {
     localStorage.removeItem("userId");
   };
 
+  // Debounced input handler for search
   const inputHandler = useCallback(
     debounce((e) => {
       const value = e.target.value.toLowerCase();

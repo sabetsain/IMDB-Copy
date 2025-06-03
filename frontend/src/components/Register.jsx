@@ -7,6 +7,7 @@ export default function Register() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {

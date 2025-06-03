@@ -1,7 +1,7 @@
 import { round } from "mathjs";
 import { useEffect, useState, useMemo } from "react";
-import { getRatedMovies, addToWatchlist, removeFromWatchlist, addRating, changeRating, deleteRating, getUserRating, formatVotes, getWatchlist } from "../api";
-import SearchMovies from "./Search";
+import { getRatedMovies, addToWatchlist, removeFromWatchlist, addRating, changeRating, deleteRating, getUserRating, getWatchlist } from "../api";
+import { formatVotes, SearchMovies } from "../helperFun";
 
 export default function Watchlist({ token, userId, input }) {
   const [ratedMovies, setRatedMovies] = useState([]);
@@ -9,10 +9,12 @@ export default function Watchlist({ token, userId, input }) {
   const [watchlist, setWatchlist] = useState([]);
   const [error, setError] = useState("");
 
+  // Filter movies based on search input
   const filteredMovies = useMemo(() => {
     return SearchMovies(input, ratedMovies);
   }, [input, ratedMovies]);
 
+  // Fetch rated movies when component mounts or token/userId changes
   useEffect(() => {
     if (!token || !userId) {
       setError("Please login to view your rated movies.");
@@ -31,17 +33,17 @@ export default function Watchlist({ token, userId, input }) {
         setRatedMovies([]);
       }
     });
-
     fetchUserRatings();
     fetchWatchlist();
   }, [token, userId]);
 
+  // Fetch user ratings
   const fetchUserRatings = async () => {
     try {
       const res = await getUserRating(token, userId);
       const ratings = {};
       if (res.ratings) {
-        res.ratings.forEach(([movie_id, rating]) => {
+        res.ratings.forEach(([movie_id, rating]) => { // Convert rating to 1-5 scale
           ratings[movie_id] = rating / 2;
         });
       }
@@ -55,7 +57,7 @@ export default function Watchlist({ token, userId, input }) {
     try {
       const res = await getWatchlist(token, userId);
       if (res.movies && res.columns) {
-        const movieIds = res.movies.map(row =>
+        const movieIds = res.movies.map(row => // Convert rows to objects
           Object.fromEntries(res.columns.map((col, i) => [col, row[i]]))
         ).map(movie => movie.movie_id);
         setWatchlist(movieIds);
@@ -67,16 +69,19 @@ export default function Watchlist({ token, userId, input }) {
     }
   };
 
+  // Handle adding/removing movies from watchlist
   const handleAdd = async (movie_id) => {
     await addToWatchlist(token, userId, movie_id);
     fetchWatchlist();
   };
 
+  // Handle removing movies from watchlist
   const handleRemove = async (movie_id) => {
     await removeFromWatchlist(token, userId, movie_id);
     fetchWatchlist();
   };
 
+  // Handle rating actions and updates
   const handleRating = async (movie_id, rating) => {
     const currentRating = userRatings[movie_id];
     try {
@@ -91,6 +96,7 @@ export default function Watchlist({ token, userId, input }) {
     }
   };
 
+  // Handle removing a rating
   const handleRemoveRating = async (movie_id) => {
     try {
       await deleteRating(token, userId, movie_id);

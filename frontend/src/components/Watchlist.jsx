@@ -1,23 +1,26 @@
 import { round } from "mathjs";
 import { useEffect, useState, useMemo } from "react";
-import { getWatchlist, removeFromWatchlist, addRating, changeRating, deleteRating, getUserRating, formatVotes } from "../api";
-import SearchMovies from "./Search";
+import { getWatchlist, removeFromWatchlist, addRating, changeRating, deleteRating, getUserRating } from "../api";
+import { formatVotes, SearchMovies } from "../helperFun";
 
 export default function Watchlist({ token, userId, input }) {
   const [watchlist, setWatchlist] = useState([]);
   const [userRatings, setUserRatings] = useState({});
   const [error, setError] = useState("");
 
+  // Filter movies based on search input
   const filteredMovies = useMemo(() => {
     return SearchMovies(input, watchlist);
   }, [input, watchlist]);
 
+  // Fetch watchlist when component mounts or token/userId changes
   useEffect(() => {
     if (!token || !userId) {
       setError("Please login to view your watchlist.");
       return;
-    }
-    
+  }
+  
+    // Fetch watchlist and user ratings
     getWatchlist(token, userId).then(res => {
       if (res.success === false) setError(res.error);
       else if (res.movies && res.columns) {
@@ -32,6 +35,7 @@ export default function Watchlist({ token, userId, input }) {
     });
   }, [token, userId]);
 
+  // Fetch user ratings
   const fetchUserRatings = async () => {
     try {
       const res = await getUserRating(token, userId);
@@ -47,6 +51,7 @@ export default function Watchlist({ token, userId, input }) {
     }
   };
 
+  // Handle rating actions and updates
   const handleRating = async (movie_id, rating) => {
     const currentRating = userRatings[movie_id];
     try {
@@ -61,6 +66,7 @@ export default function Watchlist({ token, userId, input }) {
     }
   };
 
+  // Handle removing a rating 
   const handleRemoveRating = async (movie_id) => {
     try {
       await deleteRating(token, userId, movie_id);
@@ -74,12 +80,13 @@ export default function Watchlist({ token, userId, input }) {
     }
   };
 
+  // Handle removing a movie from watchlist 
   const handleRemove = async (movie_id) => {
     await removeFromWatchlist(token, userId, movie_id);
     getWatchlist(token, userId).then(res => {
       if (res.movies && res.columns) {
         const mapped = res.movies.map(row =>
-          Object.fromEntries(res.columns.map((col, i) => [col, row[i]]))
+          Object.fromEntries(res.columns.map((col, i) => [col, row[i]])) // Map rows to objects for easier access
         );
         setWatchlist(mapped);
       } else {

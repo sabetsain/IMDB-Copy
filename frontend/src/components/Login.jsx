@@ -8,18 +8,19 @@ export default function Login({ onLogin }) {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await login(username, password);
       if (res.success) {
         onLogin(res.token, username);
-        navigate("/movies");
+        navigate("/movies"); // Redirect to movies page after successful login
       } else {
-        setError(res.error);
+        setError(res.error); 
       }
     } catch (error) {
-      setError("Login failed");
+      setError("Login failed"); 
     }
   };
 

@@ -2,8 +2,8 @@ import { round} from "mathjs";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { getMovies, getWatchlist, addToWatchlist, 
         removeFromWatchlist, addRating, changeRating, 
-        deleteRating, getUserRating, formatVotes } from "../api";
-import SearchMovies from "./Search";
+        deleteRating, getUserRating} from "../api";
+import { formatVotes, SearchMovies } from "../helperFun";
 
 export default function Movies({ token, userId, input}) {
   const [allMovies, setAllMovies] = useState([]);

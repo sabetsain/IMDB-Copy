@@ -114,5 +114,13 @@ you will find a dropdown menu where you can navigate to those respective pages.
 5. Lastly, on any given page, you can navigate using the search bar. Start searching for your favorite movie to try it out!
 
 ## E/R Diagram
+In the below E/R diagram, we present the relationships between the tables in our database. Most notable is maybe that all 
+relations between tables have a many-to-many relationship. We elaborate in our three cases:
+
+1. **Movies ratings**: Multiple users are able to give the same movie different ratings, and one user is able to give ratings 
+to multiple different movies.
+2. **Favorite Actors**: An actor is able to be favorited by multiple users, but one user can also favorite multiple actors.
+3. **Watchlist**: One movie can exist in the watchlist of multiple users, but one user can also have multiple movies in 
+their watchlist.
 
 ![E/R Diagram](./data/E:R%20Diagram%20DIS%20Project.png)

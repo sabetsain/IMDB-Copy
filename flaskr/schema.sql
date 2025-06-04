@@ -2,7 +2,6 @@ DROP TABLE IF EXISTS movie CASCADE;
 DROP TABLE IF EXISTS user_profile CASCADE;
 DROP TABLE IF EXISTS actors CASCADE;
 DROP TABLE IF EXISTS watchlist CASCADE;
-DROP TABLE IF EXISTS stars_in CASCADE;
 DROP TABLE IF EXISTS rating CASCADE;
 DROP TABLE IF EXISTS favourite_actor CASCADE;
 
@@ -41,14 +40,6 @@ CREATE TABLE watchlist (
     movie_id INTEGER NOT NULL,
     PRIMARY KEY (user_id, movie_id),
     FOREIGN KEY (user_id) REFERENCES user_profile(user_id),
-    FOREIGN KEY (movie_id) REFERENCES movie(movie_id)
-);
-
-CREATE TABLE stars_in (
-    actor_id INTEGER NOT NULL,
-    movie_id INTEGER NOT NULL,
-    PRIMARY KEY (actor_id, movie_id),
-    FOREIGN KEY (actor_id) REFERENCES actors(actor_id),
     FOREIGN KEY (movie_id) REFERENCES movie(movie_id)
 );
 

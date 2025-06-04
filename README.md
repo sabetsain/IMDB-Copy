@@ -2,33 +2,60 @@
 
 A Flask-based web application that replicates core IMDB functionality with a PostgreSQL database backend.
 
-## Prerequisites
+## Table of Contents:
+1. [Background information](#background-information)
+2. [Prerequisites](#prerequisites)
+3. [Clone the GitHub Repository](#clone-the-github-repository)
+4. [Setup with Docker](#setup-with-docker)
+5. [Setup without Docker](#setup-without-docker)
+6. [Accessing the application](#accessing-the-application)
 
+## Background information
+Our app uses python and flask for the backend, postgresql to interact with the database, and javascript and ReactJS for the 
+frontend. 
+
+Our database is from the following [kaggle database](https://www.kaggle.com/datasets/harshitshankhdhar/imdb-dataset-of-top-1000-movies-and-tv-shows).
+
+## Prerequisites
 - Python 3.8 or higher
 - PostgreSQL
 - pip (Python package manager)
 - npm (node package manager)
 - Docker Desktop + Docker VS Code extension (optional)
 
-## Docker
-If you have docker installed, you can simply run the command 'docker compose up' in the terminal,
-and the application will run.
+## Clone the GitHub repository
+```
+git clone https://github.com/sabetsain/IMDB-Copy.git
+cd IMDB-Copy
+```
 
-If running in docker container, then in the file "frontend/src/api.js" make sure that line 2 is commented out and
-that line 1 is not. As well, in the file "flaskr/db.py", make sure that line 11 is commented out and that line 12
-is not.
+## Setup with Docker
+If you have both docker desktop installed, as well as the IDE extension, then you can run the following
+from the root directory:
+```
+docker compose up
+```
+in the terminal, and the application will run.
 
-If not running in a docker container, then be sure of the opposite.
+If running in docker container, then check the following lines of code in the respective files:
+* flaskr/db.py 
+```
+(...)
+11    # pg_uri = "postgresql://dis_project:dis_project@localhost:5432/imdb_copy"
+12    pg_uri = "postgresql://dis_project:dis_project@db:5432/imdb_copy"
+(...)
+```
+* frontend/src/api.js:
+```
+1     // const API_URL = "http://127.0.0.1:5000/api";
+2     const API_URL = "http://127.0.0.1:5001/api";
+(...)
+```
+**NOTE**: Each time you compose the docker container, any information held in the databases will be cleaned, so
+for example, you will have to register a new log in.
 
-## Installation w/o Docker
-
-1. Clone this repository:
-   ```
-   git clone https://github.com/sabetsain/IMDB-Copy.git
-   cd IMDB-Copy
-   ```
-
-2. Install required dependencies:
+## Setup without Docker
+1. Install required dependencies:
    ```
    pip install -r flaskr/requirements.txt
    cd frontend
@@ -36,23 +63,56 @@ If not running in a docker container, then be sure of the opposite.
    cd ..
    ```
 
-3. Set up the PostgreSQL database:
+2. Set up the PostgreSQL database:
    - Create a database named "imdb_copy"
    - Create a user named "dis_project" with password "dis_project"
    - Grant this user all privileges on the "imdb_copy" database
 
-4. Initialize the application:
+3. Initialize the application:
    ```
    flask init-db
    ```
    You should see the message "Initialized the database."
 
-## Running the Application
+4. Again, check the following lines in the respective lines of code:
+* flaskr/db.py 
+```
+(...)
+11    pg_uri = "postgresql://dis_project:dis_project@localhost:5432/imdb_copy"
+12    # pg_uri = "postgresql://dis_project:dis_project@db:5432/imdb_copy"
+(...)
+```
+* frontend/src/api.js:
+```
+1     const API_URL = "http://127.0.0.1:5000/api";
+2     // const API_URL = "http://127.0.0.1:5001/api";
+(...)
+```
 
-To start the development server:
-* Backend (from the root directory): 'flask --app flaskr run --debug'
+5. To start the development server:
+* Backend (from the root directory):
+```
+flask --app flaskr run --debug
+```
 * Frontend:
-   - cd frontend
-   - npm run dev
+```
+cd frontend
+npm run dev
+```
 
+## Accessing the application
 Visit http://localhost:5173/ in your browser to view the application.
+
+1. To begin, register a new account. Ensure that your username only uses valid characters (lower and uppercase characters,
+numbers, dashes, periods, and underscores). Any other character types won't be accepted in your username.
+2. Once you have registered, head over to the login page and login using the account you just set up.
+3. Now you are able to rate movies, add movies to your watchlist, and browse/choose favorite actors. To rate a movie,
+simply click on the the stars found under a given movie. As well, to add a movie to your watchlist, simply click the button
+labeled 'Add to Watchlist'.
+4. To see which movies you have rated or added to your watchlist, just click on your username in the top right corner, and 
+you will find a dropdown menu where you can navigate to those respective pages.
+5. Lastly, on any given page, you can navigate using the search bar. Start searching for your favorite movie to try it out!
+
+## E/R Diagram
+
+![E/R Diagram](./data/E:R%20Diagram%20DIS%20Project.png)

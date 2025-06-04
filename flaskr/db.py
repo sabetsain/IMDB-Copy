@@ -39,20 +39,6 @@ def load_actors_csv():
                 )
         db.commit()
 
-def load_stars_in_csv():
-    db = get_db()
-    with open(os.path.join(os.path.dirname(__file__), '..', 'data', 'Stars_In_Table.csv'), newline='', encoding='utf-8') as csvfile:
-        reader = csv.DictReader(csvfile)
-        with db.cursor() as cur:
-            for row in reader:
-                cur.execute(
-                    "INSERT INTO stars_in (actor_id, movie_id) VALUES (%s, %s)",
-                    (row['actor_id'], row['movie_id'])
-                )
-        db.commit()
-
-
-
 def close_db(e=None):
     db = g.pop('db', None)
 
@@ -67,7 +53,6 @@ def init_db():
         db.commit()
     load_movies_csv()
     load_actors_csv()
-    load_stars_in_csv()
 
 def init_app(app):
     app.teardown_appcontext(close_db)

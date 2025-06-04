@@ -9,6 +9,7 @@ A Flask-based web application that replicates core IMDB functionality with a Pos
 4. [Setup with Docker](#setup-with-docker)
 5. [Setup without Docker](#setup-without-docker)
 6. [Accessing the application](#accessing-the-application)
+7. [E/R Diagram](#er-diagram)
 
 ## Background information
 Our app uses python and flask for the backend, postgresql to interact with the database, and javascript and ReactJS for the 

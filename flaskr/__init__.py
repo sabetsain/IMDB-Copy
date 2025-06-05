@@ -5,6 +5,20 @@ from flask_cors import CORS
 
 
 def create_app():
+    """
+    Description
+    -----------
+    This function creates and configures the Flask application instance.
+
+    Parameters
+    ----------
+    None
+    
+    Returns
+    -------
+    app : Flask
+        The configured Flask application instance.
+    """
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY='dev',

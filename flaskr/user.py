@@ -4,6 +4,27 @@ import os
 from .db import get_db
 
 class User:
+    """
+    Description
+    -----------
+    User class for handling user authentication and profile management.
+    
+    Attributes
+    ----------
+    username : str
+        The username of the user.
+    password : str
+        The password of the user.
+    salt : str
+        A fixed salt used for hashing passwords.
+    
+    Methods
+    -------
+    is_authenticated() -> bool
+        Checks if the user is authenticated by verifying the username and password.
+        If the user does not exist, it creates a new user profile with the provided credentials.
+    """
+
     def __init__(self, username=None, password=None):
         self.salt = "jfdalfjealkjtioraryimxcvkwngasvszefdasfwr12345678"
         self.username = username
